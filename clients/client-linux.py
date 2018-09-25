@@ -20,7 +20,6 @@ import json
 import subprocess
 import collections
 import threading
-import platform
 
 def get_uptime():
     f = open('/proc/uptime', 'r')
@@ -190,14 +189,8 @@ def _ping_thread(host, mark, port):
         time.sleep(1)
 
 def get_load():
-	system = platform.linux_distribution()
-	if system[0][:6] == "CentOS":
-		if system[1][0] == "6":
-			tmp_load = os.popen("netstat -anp |grep ESTABLISHED |grep tcp |grep '::ffff:' |awk '{print $5}' |awk -F ':' '{print $4}' |sort -u |grep -E -o '([0-9]{1,3}[\.]){3}[0-9]{1,3}' |wc -l").read()
-		else:
-			tmp_load = os.popen("netstat -anp |grep ESTABLISHED |grep tcp6 |awk '{print $5}' |awk -F ':' '{print $1}' |sort -u |grep -E -o '([0-9]{1,3}[\.]){3}[0-9]{1,3}' |wc -l").read()
-	else:
-		tmp_load = os.popen("netstat -anp |grep ESTABLISHED |grep tcp6 |awk '{print $5}' |awk -F ':' '{print $1}' |sort -u |grep -E -o '([0-9]{1,3}[\.]){3}[0-9]{1,3}' |wc -l").read()
+
+	tmp_load = os.popen("netstat -n | awk '/^tcp/ {n=split($(NF-1),array,\":\");if(n<=2)++S[array[(1)]];else++S[array[(4)]];++s[$NF];++N} END {for(a in S){printf(\"%-20s %s\\n\",a, S[a]);++I};}'|wc -l").read()
 	
 	return float(tmp_load)
 	#return os.getloadavg()[0]

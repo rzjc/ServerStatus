@@ -20,6 +20,7 @@ import json
 import subprocess
 import collections
 import threading
+import platform
 
 def get_uptime():
     f = open('/proc/uptime', 'r')

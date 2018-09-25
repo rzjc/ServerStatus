@@ -188,6 +188,19 @@ def _ping_thread(host, mark, port):
 
         time.sleep(1)
 
+def get_load():
+	system = platform.linux_distribution()
+	if system[0][:6] == "CentOS":
+		if system[1][0] == "6":
+			tmp_load = os.popen("netstat -anp |grep ESTABLISHED |grep tcp |grep '::ffff:' |awk '{print $5}' |awk -F ':' '{print $4}' |sort -u |grep -E -o '([0-9]{1,3}[\.]){3}[0-9]{1,3}' |wc -l").read()
+		else:
+			tmp_load = os.popen("netstat -anp |grep ESTABLISHED |grep tcp6 |awk '{print $5}' |awk -F ':' '{print $1}' |sort -u |grep -E -o '([0-9]{1,3}[\.]){3}[0-9]{1,3}' |wc -l").read()
+	else:
+		tmp_load = os.popen("netstat -anp |grep ESTABLISHED |grep tcp6 |awk '{print $5}' |awk -F ':' '{print $1}' |sort -u |grep -E -o '([0-9]{1,3}[\.]){3}[0-9]{1,3}' |wc -l").read()
+	
+	return float(tmp_load)
+	#return os.getloadavg()[0]
+        
 def get_packetLostRate():
     t1 = threading.Thread(
         target=_ping_thread,
@@ -271,7 +284,8 @@ if __name__ == '__main__':
                 NetRx, NetTx = traffic.get()
                 NET_IN, NET_OUT = liuliang()
                 Uptime = get_uptime()
-                Load_1, Load_5, Load_15 = os.getloadavg()
+                Load_1, Load_5, Load_23 = os.getloadavg()
+                Load_15 = get_load()
                 MemoryTotal, MemoryUsed, SwapTotal, SwapFree = get_memory()
                 HDDTotal, HDDUsed = get_hdd()
                 IP_STATUS = ip_status()

@@ -193,7 +193,7 @@ function uptime() {
 				    loadstr += " | "
 				    loadstr += result.servers[i].load_5.toFixed(2);
 				    loadstr += " | "
-				    loadstr += result.servers[i].load_15.toFixed(2);
+				    loadstr += result.servers[i].load_15;
 					TableRow.children["load"].innerHTML = loadstr
 				}
 

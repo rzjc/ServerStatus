@@ -128,7 +128,7 @@ def liuliang():
     return NET_IN, NET_OUT
 
 def ip_status():
-    object_check = ['www.10010.com', 'www.189.cn', 'www.10086.cn']
+    object_check = ['www.10010.com', 'www.10000.cn', 'www.10086.cn']
     ip_check = 0
     for i in object_check:
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
